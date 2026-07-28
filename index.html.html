@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 ماجراجویی در شهر حواس - بازی آموزشی علوم سوم ابتدایی</title>
+    <style>
+        /* ========== تنظیمات کلی ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Vazir', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ========== کانتینر اصلی بازی ========== */
+        #gameContainer {
+            width: 100%;
+            max-width: 800px;
+            height: 600px;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F7FA 70%, #A5D6A7 100%);
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), inset 0 0 100px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #FFD700;
+        }
+
+        /* ========== ابرها (انیمیشن پس‌زمینه) ========== */
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50px;
+            height: 40px;
+            animation: moveCloud 25s linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: inherit;
+            border-radius: 50%;
+        }
+        .cloud::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 20px;
+        }
+        .cloud::after {
+            width: 70px;
+            height: 70px;
+            top: -35px;
+            left: 60px;
+        }
+        .cloud1 {
+            width: 120px;
+            top: 50px;
+            left: -150px;
+            animation-duration: 20s;
+        }
+        .cloud2 {
+            width: 150px;
+            top: 120px;
+            left: -200px;
+            animation-duration: 28s;
+            animation-delay: 5s;
+        }
+        .cloud3 {
+            width: 100px;
+            top: 30px;
+            left: -120px;
+            animation-duration: 22s;
+            animation-delay: 10s;
+        }
+
+        @keyframes moveCloud {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(800px + 200px));
+            }
+        }
+
+        /* ========== صفحه‌های مختلف بازی ========== */
+        .game-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            transition: all 0.5s ease;
+            z-index: 10;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========== صفحه شروع ========== */
+        #startScreen {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border-radius: 30px;
+        }
+
+        #startScreen h1 {
+            font-size: 3.5rem;
+            color: #FFD700;
+            text-shadow: 0 4px 20px rgba(255, 215, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.2);
+            margin-bottom: 10px;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        #startScreen .subtitle {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #startScreen .subtitle span {
+            color: #FFD700;
+        }
+
+        .character-emoji {
+            font-size: 8rem;
+            margin: 10px 0;
+            animation: characterBob 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+        }
+
+        @keyframes characterBob {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        .btn {
+            padding: 16px 50px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 8px;
+            font-family: inherit;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #1a1a2e;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.08) translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(244, 67, 54, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(33, 150, 243, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ========== صفحه بازی ========== */
+        #gameScreen {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(3px);
+            padding: 20px;
+        }
+
+        /* نوار بالای بازی */
+        .game-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            color: white;
+            font-size: 1.1rem;
+            backdrop-filter: blur(5px);
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .game-header .level {
+            background: #FFD700;
+            color: #1a1a2e;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .game-header .score {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 16px;
+            border-radius: 20px;
+        }
+
+        .game-header .stars-display {
+            display: flex;
+            gap: 5px;
+            font-size: 1.4rem;
+        }
+
+        /* محتوای بازی */
+        .game-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: 20px;
+        }
+
+        .question-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 30px;
+            border-radius: 25px;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .question-box .emoji-big {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .question-box .question-text {
+            font-size: 1.5rem;
+            color: #1a1a2e;
+            font-weight: bold;
+            line-height: 1.8;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .option-btn {
+            padding: 18px 10px;
+            font-size: 1.2rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: bold;
+            color: #1a1a2e;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            border-color: #FFD700;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+
+        .option-btn.correct {
+            background: #4CAF50 !important;
+            color: white !important;
+            border-color: #4CAF50 !important;
+            animation: correctFlash 0.6s ease;
+        }
+
+        .option-btn.wrong {
+            background: #f44336 !important;
+            color: white !important;
+            border-color: #f44336 !important;
+            animation: wrongShake 0.5s ease;
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        @keyframes correctFlash {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        @keyframes wrongShake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-15px);
+            }
+            75% {
+                transform: translateX(15px);
+            }
+        }
+
+        /* ========== صفحه برنده شدن ========== */
+        #winScreen {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+        }
+
+        #winScreen .big-emoji {
+            font-size: 6rem;
+            animation: characterBob 1s ease-in-out infinite;
+        }
+
+        #winScreen h2 {
+            font-size: 3rem;
+            color: #FFD700;
+            text-shadow: 0 4px 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(-20px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(650px) rotate(720deg);
+            }
+        }
+
+        /* ========== صفحه باخت ========== */
+        #loseScreen {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+        }
+
+        #loseScreen .big-emoji {
+            font-size: 6rem;
+        }
+
+        #loseScreen h2 {
+            font-size: 2.8rem;
+            color: #ff6b6b;
+            text-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
+        }
+
+        /* ========== پیام‌های سیستم ========== */
+        .feedback-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideDown 0.5s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+
+        .feedback-message.show {
+            display: block;
+        }
+
+        .feedback-message.success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .feedback-message.error {
+            background: #f44336;
+            color: white;
+        }
+
+        .feedback-message.info {
+            background: #2196F3;
+            color: white;
+        }
+
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ========== صفحه آموزش ========== */
+        #tutorialScreen {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+        }
+
+        #tutorialScreen .tutorial-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 25px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #tutorialScreen .tutorial-box h2 {
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+
+        #tutorialScreen .tutorial-box p {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #333;
+        }
+
+        .sense-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .sense-item {
+            background: #f0f0f0;
+            padding: 10px 5px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .sense-item .emoji {
+            font-size: 2rem;
+            display: block;
+        }
+
+        /* ========== واکنش‌گرایی ========== */
+        @media (max-width: 600px) {
+            #gameContainer {
+                height: 550px;
+                border-radius: 20px;
+            }
+
+            #startScreen h1 {
+                font-size: 2.2rem;
+            }
+
+            .character-emoji {
+                font-size: 5rem;
+            }
+
+            .question-box .question-text {
+                font-size: 1.2rem;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .option-btn {
+                padding: 14px 8px;
+                font-size: 1rem;
+            }
+
+            .game-header {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+
+            .btn {
+                padding: 12px 30px;
+                font-size: 1.1rem;
+            }
+
+            #winScreen h2,
+            #loseScreen h2 {
+                font-size: 2rem;
+            }
+
+            .sense-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            #tutorialScreen .tutorial-box {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            #gameContainer {
+                height: 500px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+
+            .option-btn {
+                padding: 10px 6px;
+                font-size: 0.85rem;
+            }
+
+            .question-box {
+                padding: 15px;
+            }
+
+            .question-box .question-text {
+                font-size: 1rem;
+            }
+        }
+
+        /* ========== ستاره‌های متحرک ========== */
+        .floating-star {
+            position: absolute;
+            font-size: 2rem;
+            animation: floatStar 3s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.6;
+        }
+
+        @keyframes floatStar {
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* ========== دکمه بازگشت ========== */
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* ========== نوار پیشرفت ========== */
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ====== پیام بازخورد ====== -->
+    <div id="feedbackMessage" class="feedback-message"></div>
+
+    <!-- ====== کانتینر اصلی ====== -->
+    <div id="gameContainer">
+
+        <!-- ابرهای پس‌زمینه -->
+        <div class="cloud cloud1"></div>
+        <div class="cloud cloud2"></div>
+        <div class="cloud cloud3"></div>
+
+        <!-- ستاره‌های شناور -->
+        <div class="floating-star" style="top:10%; left:5%; animation-delay:0s;">⭐</div>
+        <div class="floating-star" style="top:20%; right:8%; animation-delay:1.5s;">🌟</div>
+        <div class="floating-star" style="bottom:25%; left:10%; animation-delay:0.8s;">⭐</div>
+        <div class="floating-star" style="bottom:15%; right:5%; animation-delay:2.2s;">✨</div>
+
+        <!-- ====== صفحه شروع ====== -->
+        <div id="startScreen" class="game-screen">
+            <div class="character-emoji">🧒</div>
+            <h1>🏙️ شهر حواس</h1>
+            <p class="subtitle">ماجراجویی با <span>آریا</span> در دنیای علوم</p>
+            <p style="color: rgba(255,255,255,0.8); margin-bottom: 15px; font-size:1.1rem;">
+                پایه سوم ابتدایی 🌟
+            </p>
+            <button class="btn btn-primary" onclick="showTutorial()">
+                🚀 شروع ماجراجویی
+            </button>
+            <p style="color: rgba(255,255,255,0.5); margin-top: 12px; font-size:0.9rem;">
+                ۱۰ مرحله • ۵ حس • جایزه ویژه
+            </p>
+        </div>
+
+        <!-- ====== صفحه آموزش ====== -->
+        <div id="tutorialScreen" class="game-screen hidden">
+            <div class="tutorial-box">
+                <h2>📚 راهنمای بازی</h2>
+                <p style="font-size:1rem; color:#555;">
+                    به <strong>شهر حواس</strong> خوش آمدی!<br>
+                    در این بازی با <strong>آریا</strong> همراه می‌شوی و<br>
+                    با <strong>۵ حس</strong> بدن آشنا می‌شوی.
+                </p>
+                <div class="sense-grid">
+                    <div class="sense-item"><span class="emoji">👁️</span>بینایی</div>
+                    <div class="sense-item"><span class="emoji">👂</span>شنوایی</div>
+                    <div class="sense-item"><span class="emoji">👃</span>بویایی</div>
+                    <div class="sense-item"><span class="emoji">👅</span>چشایی</div>
+                    <div class="sense-item"><span class="emoji">✋</span>لامسه</div>
+                </div>
+                <p style="font-size:0.95rem; color:#777;">
+                    ✅ برای هر سؤال، گزینه درست را انتخاب کن.<br>
+                    ⭐ با پاسخ‌های درست، ستاره جمع کن!
+                </p>
+                <button class="btn btn-success" onclick="startGame()">
+                    🎮 شروع بازی
+                </button>
+            </div>
+            <button class="back-btn" onclick="showStartScreen()">✕</button>
+        </div>
+
+        <!-- ====== صفحه بازی ====== -->
+        <div id="gameScreen" class="game-screen hidden">
+            <!-- هدر بازی -->
+            <div class="game-header">
+                <span class="level">مرحله <span id="levelNum">۱</span>/۱۰</span>
+                <span class="score">⭐ امتیاز: <span id="scoreNum">۰</span></span>
+                <span class="stars-display">
+                    <span id="star1">☆</span>
+                    <span id="star2">☆</span>
+                    <span id="star3">☆</span>
+                </span>
+            </div>
+
+            <!-- محتوای بازی -->
+            <div class="game-content">
+                <div class="question-box">
+                    <span class="emoji-big" id="questionEmoji">👁️</span>
+                    <div class="question-text" id="questionText">سؤال اینجاست...</div>
+                </div>
+
+                <div class="options-grid" id="optionsContainer">
+                    <button class="option-btn" data-index="0">گزینه ۱</button>
+                    <button class="option-btn" data-index="1">گزینه ۲</button>
+                    <button class="option-btn" data-index="2">گزینه ۳</button>
+                    <button class="option-btn" data-index="3">گزینه ۴</button>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== صفحه برنده شدن ====== -->
+        <div id="winScreen" class="game-screen hidden">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <div class="big-emoji">🏆</div>
+            <h2>🎉 آفرین! برنده شدی!</h2>
+            <p style="color: #fff; font-size:1.4rem; text-shadow:0 2px 10px rgba(0,0,0,0.3);">
+                امتیاز نهایی: <span id="finalScore" style="color:#FFD700;">۰</span>
+            </p>
+            <p style="color: rgba(255,255,255,0.8); font-size:1.1rem;">
+                ⭐ <span id="finalStars">۰</span> ستاره گرفتی!
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top:10px;">
+                <button class="btn btn-primary" onclick="resetGame()">🔄 بازی دوباره</button>
+                <button class="btn btn-info" onclick="showStartScreen()">🏠 صفحه اصلی</button>
+            </div>
+        </div>
+
+        <!-- ====== صفحه باخت ====== -->
+        <div id="loseScreen" class="game-screen hidden">
+            <div class="big-emoji">😢</div>
+            <h2>اشتباه شد! دوباره امتحان کن!</h2>
+            <p style="color: rgba(255,255,255,0.9); font-size:1.2rem;">
+                امتیاز: <span id="loseScore" style="color:#FFD700;">۰</span>
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top:10px;">
+                <button class="btn btn-success" onclick="resetGame()">🔄 تلاش دوباره</button>
+                <button class="btn btn-info" onclick="showStartScreen()">🏠 صفحه اصلی</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        //  داده‌های بازی - طبق سند طراحی
+        // ============================================================
+
+        const GAME_DATA = {
+            levels: [{
+                id: 1,
+                name: "آشنایی با حواس",
+                emoji: "🧠",
+                question: "برای دیدن، از کدام حس استفاده می‌کنیم؟",
+                options: ["👁️ بینایی", "👂 شنوایی", "👃 بویایی", "✋ لامسه"],
+                correct: 0,
+                sense: "بینایی"
+            }, {
+                id: 2,
+                name: "شنیدن آواز",
+                emoji: "🎵",
+                question: "برای شنیدن آواز پرنده، از کدام حس استفاده می‌کنیم؟",
+                options: ["👁️ بینایی", "👂 شنوایی", "👅 چشایی", "👃 بویایی"],
+                correct: 1,
+                sense: "شنوایی"
+            }, {
+                id: 3,
+                name: "بوی گل",
+                emoji: "🌹",
+                question: "برای بو کردن گل، از کدام حس استفاده می‌کنیم؟",
+                options: ["👃 بویایی", "👁️ بینایی", "👂 شنوایی", "✋ لامسه"],
+                correct: 0,
+                sense: "بویایی"
+            }, {
+                id: 4,
+                name: "چشیدن عسل",
+                emoji: "🍯",
+                question: "برای چشیدن طعم عسل، از کدام حس استفاده می‌کنیم؟",
+                options: ["👅 چشایی", "👃 بویایی", "👁️ بینایی", "👂 شنوایی"],
+                correct: 0,
+                sense: "چشایی"
+            }, {
+                id: 5,
+                name: "لمس کردن",
+                emoji: "🧸",
+                question: "برای لمس کردن خارهای گل رز، از کدام حس استفاده می‌کنیم؟",
+                options: ["✋ لامسه", "👁️ بینایی", "👂 شنوایی", "👃 بویایی"],
+                correct: 0,
+                sense: "لامسه"
+            }, {
+                id: 6,
+                name: "طعم غذا",
+                emoji: "🍲",
+                question: "کدام حس به ما می‌گوید که غذا شور است؟",
+                options: ["👅 چشایی", "👃 بویایی", "✋ لامسه", "👁️ بینایی"],
+                correct: 0,
+                sense: "چشایی"
+            }, {
+                id: 7,
+                name: "رنگین‌کمان",
+                emoji: "🌈",
+                question: "برای دیدن رنگین‌کمان، از کدام حس استفاده می‌کنیم؟",
+                options: ["👁️ بینایی", "👂 شنوایی", "👃 بویایی", "✋ لامسه"],
+                correct: 0,
+                sense: "بینایی"
+            }, {
+                id: 8,
+                name: "صدای موسیقی",
+                emoji: "🎶",
+                question: "برای فهمیدن اینکه موسیقی بلند است، از کدام حس استفاده می‌کنیم؟",
+                options: ["👂 شنوایی", "👁️ بینایی", "✋ لامسه", "👅 چشایی"],
+                correct: 0,
+                sense: "شنوایی"
+            }, {
+                id: 9,
+                name: "بوی کیک",
+                emoji: "🎂",
+                question: "برای تشخیص عطر کیک تازه، از کدام حس استفاده می‌کنیم؟",
+                options: ["👃 بویایی", "👁️ بینایی", "👂 شنوایی", "✋ لامسه"],
+                correct: 0,
+                sense: "بویایی"
+            }, {
+                id: 10,
+                name: "توپ نرم",
+                emoji: "⚽",
+                question: "وقتی یک توپ نرم را لمس می‌کنیم، از کدام حس استفاده کرده‌ایم؟",
+                options: ["✋ لامسه", "👁️ بینایی", "👂 شنوایی", "👃 بویایی"],
+                correct: 0,
+                sense: "لامسه"
+            }]
+        };
+
+        // ============================================================
+        //  متغیرهای وضعیت بازی
+        // ============================================================
+
+        let currentLevel = 0;
+        let score = 0;
+        let stars = 0;
+        let isAnswered = false;
+        let totalLevels = GAME_DATA.levels.length;
+
+        // ============================================================
+        //  توابع مدیریت صدا (با Web Audio API)
+        // ============================================================
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+        }
+
+        function playTone(freq, duration, type = 'sine', volume = 0.3) {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) { /* سکوت در صورت عدم پشتیبانی */ }
+        }
+
+        function playCorrectSound() {
+            playTone(523, 0.15, 'sine', 0.3);
+            setTimeout(() => playTone(659, 0.15, 'sine', 0.3), 150);
+            setTimeout(() => playTone(784, 0.2, 'sine', 0.3), 300);
+        }
+
+        function playWrongSound() {
+            playTone(200, 0.4, 'sawtooth', 0.2);
+        }
+
+        function playClickSound() {
+            playTone(800, 0.08, 'sine', 0.2);
+        }
+
+        function playWinSound() {
+            [523, 587, 659, 784, 880, 988, 1047].forEach((f, i) => {
+                setTimeout(() => playTone(f, 0.15, 'sine', 0.25), i * 120);
+            });
+        }
+
+        function playLoseSound() {
+            [400, 350, 300].forEach((f, i) => {
+                setTimeout(() => playTone(f, 0.3, 'sawtooth', 0.15), i * 200);
+            });
+        }
+
+        // ============================================================
+        //  توابع نمایش صفحه‌ها
+        // ============================================================
+
+        function hideAllScreens() {
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.add('hidden'));
+        }
+
+        function showStartScreen() {
+            hideAllScreens();
+            document.getElementById('startScreen').classList.remove('hidden');
+            playClickSound();
+        }
+
+        function showTutorial() {
+            hideAllScreens();
+            document.getElementById('tutorialScreen').classList.remove('hidden');
+            playClickSound();
+        }
+
+        function showGameScreen() {
+            hideAllScreens();
+            document.getElementById('gameScreen').classList.remove('hidden');
+        }
+
+        function showWinScreen() {
+            hideAllScreens();
+            document.getElementById('winScreen').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('finalStars').textContent = stars;
+            playWinSound();
+            createConfetti();
+        }
+
+        function showLoseScreen() {
+            hideAllScreens();
+            document.getElementById('loseScreen').classList.remove('hidden');
+            document.getElementById('loseScore').textContent = score;
+            playLoseSound();
+        }
+
+        // ============================================================
+        //  توابع اصلی بازی
+        // ============================================================
+
+        function startGame() {
+            currentLevel = 0;
+            score = 0;
+            stars = 0;
+            isAnswered = false;
+            showGameScreen();
+            renderLevel();
+            playClickSound();
+        }
+
+        function renderLevel() {
+            const level = GAME_DATA.levels[currentLevel];
+            if (!level) {
+                // اگر تمام مراحل تمام شد → برنده
+                showWinScreen();
+                return;
+            }
+
+            // به‌روزرسانی هدر
+            document.getElementById('levelNum').textContent = currentLevel + 1;
+            document.getElementById('scoreNum').textContent = score;
+
+            // به‌روزرسانی ستاره‌ها
+            updateStarsDisplay();
+
+            // به‌روزرسانی نوار پیشرفت
+            const progress = ((currentLevel) / totalLevels) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // سؤال
+            document.getElementById('questionEmoji').textContent = level.emoji;
+            document.getElementById('questionText').textContent = level.question;
+
+            // گزینه‌ها
+            const optionBtns = document.querySelectorAll('.option-btn');
+            optionBtns.forEach((btn, idx) => {
+                btn.textContent = level.options[idx] || '---';
+                btn.className = 'option-btn';
+                btn.disabled = false;
+                btn.dataset.correct = (idx === level.correct) ? 'true' : 'false';
+            });
+
+            isAnswered = false;
+        }
+
+        function updateStarsDisplay() {
+            const starEls = [
+                document.getElementById('star1'),
+                document.getElementById('star2'),
+                document.getElementById('star3')
+            ];
+            // هر ۳ ستاره برای ۳ پاسخ صحیح اول (در کل بازی)
+            const earned = Math.min(stars, 3);
+            starEls.forEach((el, i) => {
+                el.textContent = i < earned ? '⭐' : '☆';
+                el.style.color = i < earned ? '#FFD700' : '#aaa';
+            });
+        }
+
+        // ============================================================
+        //  رویداد کلیک روی گزینه‌ها
+        // ============================================================
+
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (isAnswered) return;
+                if (this.disabled) return;
+
+                const isCorrect = this.dataset.correct === 'true';
+                const allBtns = document.querySelectorAll('.option-btn');
+
+                // قفل کردن همه دکمه‌ها
+                allBtns.forEach(b => b.disabled = true);
+                isAnswered = true;
+
+                // نمایش درست/غلط
+                allBtns.forEach(b => {
+                    if (b.dataset.correct === 'true') {
+                        b.classList.add('correct');
+                    }
+                });
+
+                if (isCorrect) {
+                    this.classList.add('correct');
+                    // امتیاز
+                    const bonus = (currentLevel < 3) ? 10 : (currentLevel < 6) ? 15 : 20;
+                    score += bonus;
+                    stars = Math.min(stars + 1, 3);
+                    document.getElementById('scoreNum').textContent = score;
+                    updateStarsDisplay();
+                    showFeedback('✅ پاسخ عالی! +' + bonus + ' امتیاز', 'success');
+                    playCorrectSound();
+                } else {
+                    this.classList.add('wrong');
+                    showFeedback('❌ پاسخ اشتباه! دقت کن.', 'error');
+                    playWrongSound();
+                }
+
+                // بعد از ۱ ثانیه به مرحله بعد برو
+                setTimeout(() => {
+                    currentLevel++;
+                    if (currentLevel >= totalLevels) {
+                        // پایان بازی - برنده
+                        showWinScreen();
+                    } else {
+                        renderLevel();
+                    }
+                }, 1200);
+            });
+        });
+
+        // ============================================================
+        //  بازخورد (پیام)
+        // ============================================================
+
+        let feedbackTimeout = null;
+
+        function showFeedback(message, type = 'info') {
+            const el = document.getElementById('feedbackMessage');
+            el.textContent = message;
+            el.className = 'feedback-message show ' + type;
+            clearTimeout(feedbackTimeout);
+            feedbackTimeout = setTimeout(() => {
+                el.classList.remove('show');
+            }, 1200);
+        }
+
+        // ============================================================
+        //  کانفتی (جشن)
+        // ============================================================
+
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            container.innerHTML = '';
+            const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF6BD6', '#FF9F43'];
+            for (let i = 0; i < 60; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 10 + 6) + 'px';
+                confetti.style.height = (Math.random() * 10 + 6) + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.animationDelay = (Math.random() * 2) + 's';
+                container.appendChild(confetti);
+            }
+            // پاک کردن بعد از ۵ ثانیه
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // ============================================================
+        //  ریست بازی
+        // ============================================================
+
+        function resetGame() {
+            currentLevel = 0;
+            score = 0;
+            stars = 0;
+            isAnswered = false;
+            document.getElementById('confettiContainer').innerHTML = '';
+            showGameScreen();
+            renderLevel();
+            playClickSound();
+        }
+
+        // ============================================================
+        //  راه‌اندازی اولیه
+        // ============================================================
+
+        // نمایش صفحه شروع در ابتدا
+        showStartScreen();
+
+        // مقداردهی اولیه ستاره‌ها
+        updateStarsDisplay();
+
+        // نمایش نسخه بازی در کنسول
+        console.log('🎮 ماجراجویی در شهر حواس v1.0');
+        console.log('📚 طراحی شده برای پایه سوم ابتدایی');
+        console.log('🌟 از بازی لذت ببرید!');
+
+        // ============================================================
+        //  پشتیبانی از صفحه‌کلید (دسترسی‌پذیری)
+        // ============================================================
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const startBtn = document.querySelector('#startScreen .btn-primary');
+                if (startBtn && !document.getElementById('startScreen').classList.contains('hidden')) {
+                    startBtn.click();
+                    e.preventDefault();
+                }
+            }
+            // اعداد ۱ تا ۴ برای انتخاب گزینه
+            if (e.key >= '1' && e.key <= '4') {
+                const idx = parseInt(e.key) - 1;
+                const btns = document.querySelectorAll('.option-btn:not(:disabled)');
+                if (btns[idx]) {
+                    btns[idx].click();
+                    e.preventDefault();
+                }
+            }
+        });
+
+        console.log('⌨️ کلیدهای ۱ تا ۴ برای انتخاب گزینه');
+        console.log('🎯 ENTER یا SPACE برای شروع');
+    </script>
+
+</body>
+</html>
